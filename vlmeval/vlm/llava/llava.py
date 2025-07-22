@@ -719,7 +719,14 @@ class LLaVA_OneVision(BaseModel):
         return spare_frames, frame_time, video_time
 
     def generate_inner(self, message, dataset=None):
-        if DATASET_MODALITY(dataset) == 'VIDEO' and 'megabench' not in dataset.lower():
+        if DATASET_MODALITY(dataset) == 'MixedInput':
+            for msg in message:
+                if msg['type'] == 'video':
+                    return self.generate_inner_video(message, dataset)
+                elif msg['type'] == 'image':
+                    return self.generate_inner_image(message, dataset)
+            raise NotImplementedError("Message must contain 'video' or 'image' type on MixedInput mode.")
+        elif DATASET_MODALITY(dataset) == 'VIDEO' and 'megabench' not in dataset.lower():
             return self.generate_inner_video(message, dataset)
         else:
             return self.generate_inner_image(message, dataset)

@@ -45,6 +45,7 @@ from vlmeval.dataset import build_dataset
 from vlmeval.inference import infer_data_job
 from vlmeval.inference_video import infer_data_job_video
 from vlmeval.inference_mt import infer_data_job_mt
+from vlmeval.inference_mixed import infer_data_job_mixed
 from vlmeval.smp import *
 from vlmeval.utils.result_transfer import MMMU_result_transfer, MMTBench_result_transfer
 
@@ -194,6 +195,7 @@ You can launch the evaluation by setting either --data and --model or --config.
     parser.add_argument('--reuse-aux', type=int, default=True, help='reuse auxiliary evaluation files')
     parser.add_argument(
         '--use-vllm', action='store_true', help='use vllm to generate, the flag is only supported in Llama4 for now')
+    parser.add_argument('--data_base', type=str, default=None, help='define root dir of datasets')
 
     args = parser.parse_args()
     return args
@@ -285,6 +287,9 @@ def main():
                     dataset_kwargs = {}
                     if dataset_name in ['MMLongBench_DOC', 'DUDE', 'DUDE_MINI', 'SLIDEVQA', 'SLIDEVQA_MINI']:
                         dataset_kwargs['model'] = model_name
+                    
+                    if args.data_base is not None:
+                        dataset_kwargs['data_base'] = args.data_base
 
                     # If distributed, first build the dataset on the main process for doing preparation works
                     if WORLD_SIZE > 1:
@@ -332,6 +337,17 @@ def main():
                         work_dir=pred_root,
                         model_name=model_name,
                         dataset=dataset,
+                        verbose=args.verbose,
+                        api_nproc=args.api_nproc,
+                        ignore_failed=args.ignore,
+                        use_vllm=args.use_vllm)
+                elif dataset.TYPE == 'MixedOutput':
+                    model = infer_data_job_mixed(
+                        model,
+                        work_dir=pred_root,
+                        model_name=model_name,
+                        dataset=dataset,
+                        actual_dataset_name=dataset_name,
                         verbose=args.verbose,
                         api_nproc=args.api_nproc,
                         ignore_failed=args.ignore,

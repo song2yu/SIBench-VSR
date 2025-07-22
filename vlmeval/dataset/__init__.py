@@ -20,6 +20,7 @@ from .image_vqa import (
 from .image_ccocr import CCOCRDataset
 from .image_shortqa import ImageShortQADataset, PathVQA_VAL, PathVQA_TEST
 from .text_mcq import CustomTextMCQDataset, TextMCQDataset
+from .SIBench import SIBench
 
 from .vcr import VCRDataset
 from .mmlongbench import MMLongBench
@@ -66,6 +67,7 @@ from .creation import CreationMMBenchDataset
 from .mmalignbench import MMAlignBench
 from .utils import *
 from .video_dataset_config import *
+from .mixed_dataset_with_video_config import *
 from ..smp import *
 from .Omnidocbench.omnidocbench import OmniDocBench
 from .moat import MOAT
@@ -83,7 +85,7 @@ class ConcatDataset(ImageBaseDataset):
         'MMMB': ['MMMB_ar', 'MMMB_cn', 'MMMB_en', 'MMMB_pt', 'MMMB_ru', 'MMMB_tr'],
         'MTL_MMBench_DEV': [
             'MMBench_dev_ar', 'MMBench_dev_cn', 'MMBench_dev_en',
-            'MMBench_dev_pt', 'MMBench_dev_ru', 'MMBench_dev_tr'
+            'MMBench_dev_pt', 'MMBench_dev_ru', 'MMBench_dev_tr',
         ],
         'ScreenSpot_Pro': [
             'ScreenSpot_Pro_Development', 'ScreenSpot_Pro_Creative', 'ScreenSpot_Pro_CAD',
@@ -218,13 +220,15 @@ TEXT_DATASET = [
     TextMCQDataset
 ]
 
+MIXED_DATASET = [SIBench]
+
 CUSTOM_DATASET = [
     CustomMCQDataset, CustomVQADataset, CustomTextMCQDataset
 ]
 
 DATASET_COLLECTION = [ConcatDataset, ConcatVideoDataset]
 
-DATASET_CLASSES = IMAGE_DATASET + VIDEO_DATASET + TEXT_DATASET + CUSTOM_DATASET + DATASET_COLLECTION  # noqa: E501
+DATASET_CLASSES = IMAGE_DATASET + VIDEO_DATASET + TEXT_DATASET + MIXED_DATASET + CUSTOM_DATASET + DATASET_COLLECTION  # noqa: E501
 SUPPORTED_DATASETS = []
 for DATASET_CLS in DATASET_CLASSES:
     SUPPORTED_DATASETS.extend(DATASET_CLS.supported_datasets())
@@ -275,6 +279,8 @@ def build_dataset(dataset_name, **kwargs):
     for cls in DATASET_CLASSES:
         if dataset_name in supported_video_datasets:
             return supported_video_datasets[dataset_name](**kwargs)
+        elif dataset_name in supported_mixed_datasets_include_video:
+            return supported_mixed_datasets_include_video[dataset_name](**kwargs)
         elif dataset_name in cls.supported_datasets():
             return cls(dataset=dataset_name, **kwargs)
 

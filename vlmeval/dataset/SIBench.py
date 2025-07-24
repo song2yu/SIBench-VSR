@@ -131,7 +131,7 @@ Please analyze these frames and answer the question based on your observations.
     def build_prompt_for_image(self, line):
         msgs = []
         if line.get('image_path'):
-            tgt_path = toliststr(line['image_path'].split(','))
+            tgt_path = toliststr(''.join(line['image_path'].split()).split(','))
             for _ in range(len(tgt_path)):
                 tgt_path[_] = os.path.join(self.data_base, tgt_path[_])
         else:
@@ -164,6 +164,7 @@ Please analyze these frames and answer the question based on your observations.
 
     def evaluate(self, eval_file, **judge_kwargs):
         from .utils.multiple_choice import extract_characters_regex, report_acc
+        from .utils.yorn import YOrN_Extraction
         assert eval_file.endswith('.xlsx'), 'data file should be an xlsx file'
         FAIL_MSG = 'Failed to obtain answer via API.'
         tmp_file = eval_file.replace('.xlsx', '_tmp.pkl')
@@ -193,7 +194,12 @@ Please analyze these frames and answer the question based on your observations.
                     else:
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                 elif output_type == 'YN':
-                    raise NotImplementedError
+                    extract_pred = YOrN_Extraction(pred)
+                    if extract_pred == 'Unknown':
+                        cnt_rejected += 1
+                        data.loc[data['index'] == idx, 'hit'] = 0
+                    else:
+                        data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                 elif output_type == 'Number':
                     raise NotImplementedError
 
@@ -205,13 +211,6 @@ Please analyze these frames and answer the question based on your observations.
 
             dump(data, score_file)
         data = load(score_file)
-
         acc = report_acc(data)
         dump(acc, score_file_csv)
         return acc
-        
-
-
-
-class SIBenchVideo(ImageBaseDataset):
-    pass

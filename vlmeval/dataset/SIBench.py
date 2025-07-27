@@ -46,7 +46,7 @@ Please analyze these frames and answer the question based on your observations.
 
     @classmethod
     def supported_datasets(cls):
-        return ['Maze_Navigation', 'Object_Shape', 'Route_Planning']
+        return cls.SETTING
     
     def add_extra_prompt(self, prompt, answer_type, data_source):
         if data_source in self.NEED_EXTRA_PROMPT_SOURCE:

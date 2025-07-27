@@ -276,10 +276,12 @@ def DATASET_MODALITY(dataset, *, default: str = 'IMAGE') -> str:
 
 
 def build_dataset(dataset_name, **kwargs):
+    data_base = kwargs.pop('data_base')
     for cls in DATASET_CLASSES:
         if dataset_name in supported_video_datasets:
             return supported_video_datasets[dataset_name](**kwargs)
         elif dataset_name in supported_mixed_datasets_include_video:
+            kwargs['data_base'] = data_base
             return supported_mixed_datasets_include_video[dataset_name](**kwargs)
         elif dataset_name in cls.supported_datasets():
             return cls(dataset=dataset_name, **kwargs)

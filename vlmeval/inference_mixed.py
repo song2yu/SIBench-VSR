@@ -212,7 +212,7 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, data_b
                 )
             else:
                 struct = dataset.build_prompt(
-                    dataset.data.iloc[i], video_llm=getattr(model, 'VIDEO_LLM', False)
+                    dataset.data.iloc[i], video_llm=getattr(model, 'VIDEO_LLM', False), data_base=data_base
                 )
 
             # If `SKIP_ERR` flag is set, the model will skip the generation if error is encountered
@@ -226,6 +226,8 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, data_b
                     response = f'{FAIL_MSG}: {type(err)} {str(err)}'
             else:
                 response = model.generate(message=struct, dataset=dataset_name)
+        else:
+            raise NotImplementedError
         torch.cuda.empty_cache()
 
         if verbose:

@@ -32,8 +32,7 @@ Please analyze these frames and answer the question based on your observations.
     
     def __init__(self, dataset='MMBench', skip_noimg=True, data_base='', nframe=16, fps=0):
         super(SIBench, self).__init__(dataset, skip_noimg)
-        self.data_base = data_base
-        self.frame_root = data_base
+
         self.frame_tmpl = 'frame-{}-of-{}.jpg'
         self.frame_tmpl_fps = 'frame-{}-of-{}-{}fps.jpg'
 
@@ -54,7 +53,7 @@ Please analyze these frames and answer the question based on your observations.
                 prompt += "\nSelect from the given options, answer with letters only."
             elif answer_type == 'YN':
                 prompt += "\nAnswer with 'Yes' or 'No' only."
-            elif answer_type == 'Number':
+            elif answer_type.startswith('Number'):
                 prompt += "\nAnswer using a single number and nothing else."
             else:
                 raise NotImplementedError(f"Answer type '{answer_type}' is not supported. Supported types are: 'MCQ', 'YN', 'Number'.")
@@ -62,16 +61,16 @@ Please analyze these frames and answer the question based on your observations.
             raise KeyError("Required key 'data_source' is missing.")
         return prompt
 
-    def frame_paths(self, video):
+    def frame_paths(self, video, data_base):
         # need self.frame_root & self.frame_tmpl & self.nframe
-        frame_root = osp.join(self.frame_root, video)
+        frame_root = osp.join(data_base, video)
         os.makedirs(frame_root, exist_ok=True)
         return [osp.join(frame_root, self.frame_tmpl.format(i, self.nframe)) for i in range(1, self.nframe + 1)]
 
-    def save_video_frames(self, line):
+    def save_video_frames(self, line, data_base):
         # need self.nframe & self.fps
         video = line['video']
-        vid_path = os.path.normpath(os.path.join(self.data_base, line['video_path']))
+        vid_path = os.path.normpath(os.path.join(data_base, line['video_path']))
         vid = decord.VideoReader(vid_path)
         video_info = {
             'fps': vid.get_avg_fps(),
@@ -80,7 +79,7 @@ Please analyze these frames and answer the question based on your observations.
         if self.nframe > 0 and self.fps < 0:
             step_size = len(vid) / (self.nframe + 1)
             indices = [int(i * step_size) for i in range(1, self.nframe + 1)]
-            frame_paths = self.frame_paths(video)
+            frame_paths = self.frame_paths(video, data_base)
         elif self.fps > 0:
             # not constrained by num_frames, get frames by fps
             total_duration = video_info['n_frames'] / video_info['fps']
@@ -100,17 +99,17 @@ Please analyze these frames and answer the question based on your observations.
 
         return frame_paths
 
-    def save_video_into_images(self, line):
-        frame_paths = self.save_video_frames(line)
+    def save_video_into_images(self, line, data_base):
+        frame_paths = self.save_video_frames(line, data_base)
         return frame_paths
     
-    def build_prompt_for_video(self, line, video_llm):
+    def build_prompt_for_video(self, line, video_llm, data_base):
         # need video_llm 
         if isinstance(line, int):
             assert line < len(self)
             line = self.data.iloc[line]
 
-        video_path = os.path.normpath(os.path.join(self.data_base, line['video_path']))
+        video_path = os.path.normpath(os.path.join(data_base, line['video_path']))
         prompt = line['question']
         answer_type = line.get('type')
         data_source = line.get('data_source')
@@ -121,19 +120,19 @@ Please analyze these frames and answer the question based on your observations.
             message.append(dict(type='text', value=prompt))
             message.append(dict(type='video', value=video_path))
         else:
-            img_frame_paths = self.save_video_into_images(line)
+            img_frame_paths = self.save_video_into_images(line, data_base)
             message = [dict(type='text', value=self.FRAMES_TMPL_SYS.format(len(img_frame_paths)))]
             message.append(dict(type='text', value=prompt))
             for im in img_frame_paths:
                 message.append(dict(type='image', value=im))
         return message
 
-    def build_prompt_for_image(self, line):
+    def build_prompt_for_image(self, line, data_base):
         msgs = []
         if line.get('image_path'):
             tgt_path = toliststr(''.join(line['image_path'].split()).split(','))
             for _ in range(len(tgt_path)):
-                tgt_path[_] = os.path.join(self.data_base, tgt_path[_])
+                tgt_path[_] = os.path.join(data_base, tgt_path[_])
         else:
             raise KeyError("Required key 'image_path' is missing.")
 
@@ -150,14 +149,14 @@ Please analyze these frames and answer the question based on your observations.
         msgs.append(dict(type='text', value=prompt))
         return msgs
 
-    def build_prompt(self, line, video_llm=None):
+    def build_prompt(self, line, video_llm=None, data_base='.'):
         if isinstance(line, int):
             line = self.data.iloc[line]
         
         if line.get('input_type') in ['image', 'multi-view']:
-            return self.build_prompt_for_image(line=line)
+            return self.build_prompt_for_image(line=line, data_base=data_base)
         elif line.get('input_type') == 'video':
-            return self.build_prompt_for_video(line=line, video_llm=video_llm)
+            return self.build_prompt_for_video(line=line, video_llm=video_llm, data_base=data_base)
         else:
             raise NotImplementedError(f"Unrecognized input type: {line.get('input_type')}.\
                                        Just support 'image', 'multi-view' and 'video'.")
@@ -201,7 +200,9 @@ Please analyze these frames and answer the question based on your observations.
                     else:
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                 elif output_type == 'Number':
-                    raise NotImplementedError
+                    raw_results = eval_file.replace('.xlsx', '_raw_results.xlsx')
+                    dump(data, raw_results)
+                    raise NotImplementedError('Metric calculating is not supported for Number output.')
 
             print(
                 f'Among {len(data)} questions, failed to obtain prediction for {len(data) - len(data_un)} questions, '

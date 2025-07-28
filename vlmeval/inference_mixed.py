@@ -79,7 +79,7 @@ def infer_data_api(model, work_dir, model_name, dataset, actual_dataset_name, in
     return res
 
 
-def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, out_file, verbose=False, api_nproc=4, use_vllm=False):
+def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, data_base, out_file, verbose=False, api_nproc=4, use_vllm=False):
     dataset_name = dataset.dataset_name
     prev_file = f'{work_dir}/{model_name}_{actual_dataset_name}_PREV.pkl'
     res = load(prev_file) if osp.exists(prev_file) else {}
@@ -161,7 +161,7 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, out_fi
             if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
                 struct = model.build_prompt(data.iloc[i], dataset=dataset_name)
             else:
-                struct = dataset.build_prompt(data.iloc[i])
+                struct = dataset.build_prompt(data.iloc[i], data_base=data_base)
 
             # If `SKIP_ERR` flag is set, the model will skip the generation if error is encountered
             if os.environ.get('SKIP_ERR', False) == '1':
@@ -242,7 +242,7 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, out_fi
 
 # A wrapper for infer_data, do the pre & post processing
 def infer_data_job_mixed(
-    model, work_dir, model_name, dataset, actual_dataset_name, verbose=False, api_nproc=4, ignore_failed=False, use_vllm=False
+    model, work_dir, model_name, dataset, actual_dataset_name, data_base, verbose=False, api_nproc=4, ignore_failed=False, use_vllm=False
 ):
     rank, world_size = get_rank_and_world_size()
     dataset_name = dataset.dataset_name
@@ -264,7 +264,7 @@ def infer_data_job_mixed(
 
     model = infer_data(
         model=model, work_dir=work_dir, model_name=model_name, dataset=dataset, actual_dataset_name=actual_dataset_name,
-        out_file=out_file, verbose=verbose, api_nproc=api_nproc, use_vllm=use_vllm)
+        data_base=data_base, out_file=out_file, verbose=verbose, api_nproc=api_nproc, use_vllm=use_vllm)
     if world_size > 1:
         dist.barrier()
 

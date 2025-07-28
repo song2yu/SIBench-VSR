@@ -287,10 +287,6 @@ def main():
                     dataset_kwargs = {}
                     if dataset_name in ['MMLongBench_DOC', 'DUDE', 'DUDE_MINI', 'SLIDEVQA', 'SLIDEVQA_MINI']:
                         dataset_kwargs['model'] = model_name
-                    
-                    if args.data_base is not None:
-                        dataset_kwargs['data_base'] = args.data_base
-
                     # If distributed, first build the dataset on the main process for doing preparation works
                     if WORLD_SIZE > 1:
                         if RANK == 0:
@@ -348,6 +344,7 @@ def main():
                         model_name=model_name,
                         dataset=dataset,
                         actual_dataset_name=dataset_name,
+                        data_base=args.data_base,
                         verbose=args.verbose,
                         api_nproc=args.api_nproc,
                         ignore_failed=args.ignore,

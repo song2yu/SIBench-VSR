@@ -199,7 +199,7 @@ Please analyze these frames and answer the question based on your observations.
                         data.loc[data['index'] == idx, 'hit'] = 0
                     else:
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
-                elif output_type == 'Number':
+                elif output_type.startswith('Number'):
                     raw_results = eval_file.replace('.xlsx', '_raw_results.xlsx')
                     dump(data, raw_results)
                     raise NotImplementedError('Metric calculating is not supported for Number output.')

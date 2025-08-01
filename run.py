@@ -1,3 +1,4 @@
+import torch
 import json
 import os
 import subprocess
@@ -264,6 +265,7 @@ def main():
         if not osp.exists(pred_root):
             os.makedirs(pred_root, exist_ok=True)
 
+        torch.cuda.empty_cache()
         if use_config:
             model = build_model_from_config(cfg['model'], model_name, args.use_vllm)
 

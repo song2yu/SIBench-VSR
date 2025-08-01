@@ -4,6 +4,7 @@ from .video_base import VideoBaseDataset
 from ..smp import *
 import os
 import decord
+import re
 
 class SIBench(ImageMCQDataset, ImageBaseDataset, VideoBaseDataset):
     MODALITY = 'MixedInput'
@@ -161,6 +162,31 @@ Please analyze these frames and answer the question based on your observations.
             raise NotImplementedError(f"Unrecognized input type: {line.get('input_type')}.\
                                        Just support 'image', 'multi-view' and 'video'.")
 
+    def extract_numbers_from_string(self, text, reverse_order):
+        number_strings = re.findall(r'-?\d{1,3}(?:,\d{3})*(?:\.\d+)?', text)
+        result = []
+        for num_str in number_strings:
+            cleaned_str = num_str.replace(',', '')
+            try:
+                result.append(float(cleaned_str))
+            except ValueError:
+                continue
+                
+        if reverse_order:
+            result.reverse()
+                
+        return result
+    
+    def compute_mra(self, y_true, y_pred):
+        C = np.arange(0.5, 1.0, 0.05)
+        mra_sum = 0
+        for theta in C:
+            relative_error = np.abs(y_pred - y_true) / y_true
+            if relative_error < (1 - theta):
+                mra_sum += 1
+        mra = mra_sum / len(C)
+        return mra
+
     def evaluate(self, eval_file, **judge_kwargs):
         from .utils.multiple_choice import extract_characters_regex, report_acc
         from .utils.yorn import YOrN_Extraction
@@ -200,9 +226,20 @@ Please analyze these frames and answer the question based on your observations.
                     else:
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                 elif output_type.startswith('Number'):
-                    raw_results = eval_file.replace('.xlsx', '_raw_results.xlsx')
-                    dump(data, raw_results)
-                    raise NotImplementedError('Metric calculating is not supported for Number output.')
+                    extract_pred = self.extract_numbers_from_string(pred, True)
+                    if len(extract_pred) == 0:
+                        cnt_rejected += 1
+                        data.loc[data['index'] == idx, 'hit'] = 0
+                        continue
+                    extract_pred = extract_pred[0]
+                    ans = eval(ans)
+                    if output_type == 'Number': 
+                        data.loc[data['index'] == idx, 'hit'] = self.compute_mra(ans, extract_pred)
+                    elif output_type == 'Number_Int':
+                        data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
+                    else:
+                        NotImplementedError(f'Unsupported output type {output_type}.')
+
 
             print(
                 f'Among {len(data)} questions, failed to obtain prediction for {len(data) - len(data_un)} questions, '

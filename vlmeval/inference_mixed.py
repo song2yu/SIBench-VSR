@@ -227,6 +227,7 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, data_b
             else:
                 response = model.generate(message=struct, dataset=dataset_name)
         else:
+            torch.cuda.empty_cache()
             raise NotImplementedError
         torch.cuda.empty_cache()
 

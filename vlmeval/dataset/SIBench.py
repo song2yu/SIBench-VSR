@@ -14,12 +14,15 @@ class SIBench(ImageMCQDataset, ImageBaseDataset, VideoBaseDataset):
                          'VSI-Bench', 'STI-Bench', 'SpatialEval', 'SITE-Bench', 'SPHERE-VLM', 'SRBench', 'BLINK'
                          ]
     # do not need = SpatialBench, SPAR-Bench, Super-CLEVR-3D, Omni3D-Bench
-    SETTING = ['Relative_Distance', 'Reach_Prediction', 'Object_Shape', 'Height', 'Existence', 'Spatial_Compatibility',
+    SETTING = ['relative_distance', 'Reach_Prediction', 'Object_Shape', 'Height', 'Existence', 'Spatial_Compatibility',
                'Coordinate_Conversion', 'Counting', 'Route_Planning', 'Trajectory_Description', 'Geometric_Reasoning',
                'Spatial_Imagination', 'Object_Size_Estimation', 'Spatial_Grid', 'Situational_QA', 'Velocity_Acceleration',
-               'Maze_Navigation', 'Temporal-Appearance_Order', 'Camera_Pose', 'Occlusion', 'Multi-view_Reasoning',
-               'Object_Localization'
+               'Maze_Navigation', 'Temporal-Appearance_Order', 'Camera_Pose', 'Occlusion', 'multi-view_reasoning',
+               'Object_Localization',"Spatial_Relation"
                ]
+
+# Counting Camera_Pose Coordinate_Conversion multi-view_reasoning Object_Shape Object_Size_Estimation Occlusion relative_distance Situational_QA Spatial_Grid Spatial_Relation Trajectory_Description
+# Reach_Prediction Height Existence Spatial_Compatibility Route_Planning Geometric_Reasoning Velocity_Acceleration Spatial_Imagination Temporal-Appearance_Order Object_Localization
     VIDEO_MODALITY_INCLUDED_SETTING = ['']
 
     FRAMES_TMPL_SYS = """
@@ -31,7 +34,7 @@ You will receive several distinct frames that have been uniformly sampled from a
 Please analyze these frames and answer the question based on your observations.
 """
     
-    def __init__(self, dataset='MMBench', skip_noimg=True, data_base='', nframe=16, fps=0):
+    def __init__(self, dataset='MMBench', skip_noimg=True, nframe=30, fps=0):
         super(SIBench, self).__init__(dataset, skip_noimg)
 
         self.frame_tmpl = 'frame-{}-of-{}.jpg'
@@ -116,7 +119,7 @@ Please analyze these frames and answer the question based on your observations.
         data_source = line.get('data_source')
         prompt = self.add_extra_prompt(prompt, answer_type, data_source)
 
-        if video_llm:
+        if True: # video_llm
             message = [dict(type='text', value=self.FRAMES_TMPL_SYS_4VIDEO_LLM)]
             message.append(dict(type='text', value=prompt))
             message.append(dict(type='video', value=video_path))
@@ -157,7 +160,8 @@ Please analyze these frames and answer the question based on your observations.
         if line.get('input_type') in ['image', 'multi-view']:
             return self.build_prompt_for_image(line=line, data_base=data_base)
         elif line.get('input_type') == 'video':
-            return self.build_prompt_for_video(line=line, video_llm=video_llm, data_base=data_base)
+            video_data_base = data_base.replace('/data', '/data_sampled_video')
+            return self.build_prompt_for_video(line=line, video_llm=video_llm, data_base=video_data_base)
         else:
             raise NotImplementedError(f"Unrecognized input type: {line.get('input_type')}.\
                                        Just support 'image', 'multi-view' and 'video'.")
@@ -212,29 +216,32 @@ Please analyze these frames and answer the question based on your observations.
                 output_type = data.loc[data['index'] == idx, 'type'].values[0]
 
                 if output_type == 'MCQ':
-                    extract_pred = extract_characters_regex(pred)
+                    extract_pred = pred # extract_characters_regex(pred)
                     if extract_pred == '':
                         cnt_rejected += 1
                         data.loc[data['index'] == idx, 'hit'] = 0
                     else:
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                 elif output_type == 'YN':
-                    extract_pred = YOrN_Extraction(pred)
+                    extract_pred = pred # YOrN_Extraction(pred)
                     if extract_pred == 'Unknown':
                         cnt_rejected += 1
                         data.loc[data['index'] == idx, 'hit'] = 0
                     else:
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                 elif output_type.startswith('Number'):
-                    extract_pred = self.extract_numbers_from_string(pred, True)
-                    if len(extract_pred) == 0:
-                        cnt_rejected += 1
-                        data.loc[data['index'] == idx, 'hit'] = 0
-                        continue
-                    extract_pred = extract_pred[0]
-                    ans = eval(ans)
+                    try:
+                        extract_pred = eval(str(pred.strip()))
+                    except Exception:
+                        extract_pred = -1.0 #pred.strip()  # self.extract_numbers_from_string(pred, True)
+                    # if len(extract_pred) == 0:
+                    #     cnt_rejected += 1
+                    #     data.loc[data['index'] == idx, 'hit'] = 0
+                    #     continue
+                    # extract_pred = extract_pred[0]
+                    ans = eval(str(ans))
                     if output_type == 'Number': 
-                        data.loc[data['index'] == idx, 'hit'] = self.compute_mra(ans, extract_pred)
+                        data.loc[data['index'] == idx, 'hit'] = self.compute_mra(ans, extract_pred) #data.loc[data['index'] == idx, 'hit'] = 0 #
                     elif output_type == 'Number_Int':
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                     else:

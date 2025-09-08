@@ -245,8 +245,10 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, data_b
 
 # A wrapper for infer_data, do the pre & post processing
 def infer_data_job_mixed(
-    model, work_dir, model_name, dataset, actual_dataset_name, data_base, verbose=False, api_nproc=4, ignore_failed=False, use_vllm=False
+    model, work_dir, model_name, dataset, actual_dataset_name, verbose=False, api_nproc=4, ignore_failed=False, use_vllm=False
 ):
+    lmu_path = LMUDataRoot()
+    data_base = lmu_path
     rank, world_size = get_rank_and_world_size()
     dataset_name = dataset.dataset_name
     result_file = osp.join(work_dir, f'{model_name}_{actual_dataset_name}.xlsx')

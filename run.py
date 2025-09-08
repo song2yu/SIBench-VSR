@@ -1,4 +1,3 @@
-import torch
 import json
 import os
 import subprocess
@@ -196,7 +195,7 @@ You can launch the evaluation by setting either --data and --model or --config.
     parser.add_argument('--reuse-aux', type=int, default=True, help='reuse auxiliary evaluation files')
     parser.add_argument(
         '--use-vllm', action='store_true', help='use vllm to generate, the flag is only supported in Llama4 for now')
-    parser.add_argument('--data_base', type=str, default=None, help='define root dir of datasets')
+
 
     args = parser.parse_args()
     return args
@@ -265,7 +264,6 @@ def main():
         if not osp.exists(pred_root):
             os.makedirs(pred_root, exist_ok=True)
 
-        torch.cuda.empty_cache()
         if use_config:
             model = build_model_from_config(cfg['model'], model_name, args.use_vllm)
 
@@ -346,7 +344,6 @@ def main():
                         model_name=model_name,
                         dataset=dataset,
                         actual_dataset_name=dataset_name,
-                        data_base=args.data_base,
                         verbose=args.verbose,
                         api_nproc=args.api_nproc,
                         ignore_failed=args.ignore,

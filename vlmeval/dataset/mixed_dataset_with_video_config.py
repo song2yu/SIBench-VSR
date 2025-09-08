@@ -4,6 +4,7 @@ from functools import partial
 
 sibench_dataset = {
     'Route_Planning_32frame': partial(SIBench, dataset='Route_Planning', nframe=32, fps=0),
+    'Route_Planning_30frame': partial(SIBench, dataset='Route_Planning', nframe=30, fps=0),
     'Route_Planning_16frame': partial(SIBench, dataset='Route_Planning', nframe=16, fps=0),
     'Route_Planning_1fps': partial(SIBench, dataset='Route_Planning', nframe=0, fps=1.0),
 }

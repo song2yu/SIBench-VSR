@@ -5,7 +5,7 @@ from vlmeval.utils import track_progress_rich
 from vlmeval.smp import *
 
 FAIL_MSG = 'Failed to obtain answer via API.'
-
+NOT_USE_SIBENCH_PROMPT = False
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -36,7 +36,7 @@ def infer_data_api(model, work_dir, model_name, dataset, actual_dataset_name, in
     structs = []
     for i in range(lt):
         item = data.iloc[i]
-        if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
+        if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name) and NOT_USE_SIBENCH_PROMPT:
             assert hasattr(model, 'build_prompt')
             struct = model.build_prompt(item, dataset=dataset_name)
         else:
@@ -158,7 +158,7 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, data_b
             continue
         
         if data.iloc[i]['input_type'] in ['image', 'multi-view']:
-            if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
+            if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name) and NOT_USE_SIBENCH_PROMPT:
                 struct = model.build_prompt(data.iloc[i], dataset=dataset_name)
             else:
                 struct = dataset.build_prompt(data.iloc[i], data_base=data_base)
@@ -204,7 +204,7 @@ def infer_data(model, model_name, work_dir, dataset, actual_dataset_name, data_b
                 if getattr(model, 'fps', None) is None and dataset.fps > 0:
                     print(f'using {model_name} default setting for video, dataset.fps is ommitted')
 
-            if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
+            if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name) and NOT_USE_SIBENCH_PROMPT:
                 if dataset.nframe == 0:
                     raise ValueError(f'nframe must be set for custom prompt, fps is not suitable for {model_name}')
                 struct = model.build_prompt(

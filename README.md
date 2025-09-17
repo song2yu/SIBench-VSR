@@ -50,6 +50,7 @@ Obtain the data from the following sources:
 ```html
 https://huggingface.co/datasets/Two-hot/SIBench
 ```
+For convenience, we sampled the videos and retained only **30 frames** for each one. The processed data are stored in **data_sampled_video**. We recommend replacing the original videos with these and setting the total number of sampled frames to 30 frames, which is consistent with the experimental setup in our paper. If you need to change the sampling rate, you can directly use these videos.
 
 The hierarchical structure of the data directory is:
 
@@ -61,7 +62,6 @@ SIBench_eval
     ├── MMSI-Bench
     ├── Omni3D-Bench
     ├── OmniSpatial
-    ├── SIBench_tsv
     ├── SITE-Bench
     ├── SPAR-Bench
     ├── SpatialBench
@@ -72,7 +72,6 @@ SIBench_eval
     ├── SRBench
     ├── STI-Bench
     ├── Super-CLEVR-3D
-    ├── tsv_old
     ├── VSI-Bench
     ├── vstibench
     ├── Camera_Pose.tsv
@@ -100,6 +99,25 @@ SIBench_eval
     ├── Trajectory_Description.tsv
     └── Velocity_Acceleration.tsv
 ```
+You can access these raw datasets:
+[3DSRBench](https://huggingface.co/datasets/ccvl/3DSRBench)
+[BLINK](https://huggingface.co/datasets/BLINK-Benchmark/BLINK)
+[MMSI-Bench](https://huggingface.co/datasets/RunsenXu/MMSI-Bench)
+[Omni3D-Bench](https://huggingface.co/datasets/dmarsili/Omni3D-Bench)
+[OmniSpatial](https://github.com/qizekun/OmniSpatial)
+[SITE-Bench](https://github.com/wenqi-wang20/SITE-Bench)
+[SPAR-Bench](https://github.com/fudan-zvg/spar)
+[SpatialBench](https://github.com/SpatialVision/Spatial-CLIP)
+[SpatialEval](https://github.com/jiayuww/SpatialEval)
+[Spatial-MM](https://github.com/FatemehShiri/Spatial-MM)
+[SpatialMQA](https://github.com/ziyan-xiaoyu/SpatialMQA)
+[SPHERE-VLM](https://github.com/zwenyu/SPHERE-VLM)
+[SRBench](https://github.com/stogiannidis/srbench)
+[STI-Bench](https://github.com/MINT-SJTU/STI-Bench)
+[Super-CLEVR-3D](https://github.com/XingruiWang/3D-Aware-VQA)
+[VSI-Bench](https://github.com/damianomarsili/VADAR)
+[vstibench](https://github.com/VITA-Group/VLM-3R)
+
 
 **3.  Run Examples**
 
@@ -185,6 +203,13 @@ coming soon
   title={Can Multimodal Large Language Models Understand Spatial Relations?},
   author={Liu, Jingping and Liu, Ziyan and Cen, Zhedong and Zhou, Yan and Zou, Yinan and Zhang, Weiyan and Jiang, Haiyun and Ruan, Tong},
   journal={arXiv preprint arXiv:2505.19015},
+  year={2025}
+}
+@inproceedings{Omni3D-Bench,
+  title={Visual agentic ai for spatial reasoning with a dynamic api},
+  author={Marsili, Damiano and Agrawal, Rohun and Yue, Yisong and Gkioxari, Georgia},
+  booktitle={Proceedings of the Computer Vision and Pattern Recognition Conference},
+  pages={19446--19455},
   year={2025}
 }
 @inproceedings{BLINK,

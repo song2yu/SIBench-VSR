@@ -34,7 +34,7 @@ You will receive several distinct frames that have been uniformly sampled from a
 Please analyze these frames and answer the question based on your observations.
 """
     
-    def __init__(self, dataset='MMBench', skip_noimg=True, nframe=30, fps=0):
+    def __init__(self, dataset='MMBench', skip_noimg=True, nframe=30, fps=-1):
         super(SIBench, self).__init__(dataset, skip_noimg)
 
         self.frame_tmpl = 'frame-{}-of-{}.jpg'
@@ -67,13 +67,13 @@ Please analyze these frames and answer the question based on your observations.
 
     def frame_paths(self, video, data_base):
         # need self.frame_root & self.frame_tmpl & self.nframe
-        frame_root = osp.join(data_base, video)
+        frame_root = osp.join(data_base, video.split('/')[0], 'frames')
         os.makedirs(frame_root, exist_ok=True)
         return [osp.join(frame_root, self.frame_tmpl.format(i, self.nframe)) for i in range(1, self.nframe + 1)]
 
     def save_video_frames(self, line, data_base):
         # need self.nframe & self.fps
-        video = line['video']
+        video = line['video_path']
         vid_path = os.path.normpath(os.path.join(data_base, line['video_path']))
         vid = decord.VideoReader(vid_path)
         video_info = {

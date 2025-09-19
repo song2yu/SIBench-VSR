@@ -57,47 +57,53 @@ The hierarchical structure of the data directory is:
 ```
 SIBench_eval
 └── Spatial_Intelligence_Benchmark
-    ├── 3DSRBench
-    ├── BLINK
-    ├── MMSI-Bench
-    ├── Omni3D-Bench
-    ├── OmniSpatial
-    ├── SITE-Bench
-    ├── SPAR-Bench
-    ├── SpatialBench
-    ├── SpatialEval
-    ├── Spatial-MM
-    ├── SpatialMQA
-    ├── SPHERE-VLM
-    ├── SRBench
-    ├── STI-Bench
-    ├── Super-CLEVR-3D
-    ├── VSI-Bench
-    ├── vstibench
-    ├── Camera_Pose.tsv
-    ├── Coordinate_Conversion.tsv
-    ├── Counting.tsv
-    ├── Existence.tsv
-    ├── gen_tsv.py
-    ├── Geometric_Reasoning.tsv
-    ├── Height.tsv
-    ├── Maze_Navigation.tsv
-    ├── multi-view_reasoning.tsv
-    ├── Object_Localization.tsv
-    ├── Object_Shape.tsv
-    ├── Object_Size_Estimation.tsv
-    ├── Occlusion.tsv
-    ├── Reach_Prediction.tsv
-    ├── relative_distance.tsv
-    ├── Route_Planning.tsv
-    ├── Situational_QA.tsv
-    ├── Spatial_Compatibility.tsv
-    ├── Spatial_Grid.tsv
-    ├── Spatial_Imagination.tsv
-    ├── Spatial_Relation.tsv
-    ├── Temporal-Appearance_Order.tsv
-    ├── Trajectory_Description.tsv
-    └── Velocity_Acceleration.tsv
+  └── data
+      ├── 3DSRBench
+      ├── BLINK
+      ├── MMSI-Bench
+      ├── Omni3D-Bench
+      ├── OmniSpatial
+      ├── SITE-Bench
+      ├── SPAR-Bench
+      ├── SpatialBench
+      ├── SpatialEval
+      ├── Spatial-MM
+      ├── SpatialMQA
+      ├── SPHERE-VLM
+      ├── SRBench
+      ├── STI-Bench
+      ├── Super-CLEVR-3D
+      ├── VSI-Bench
+      ├── vstibench
+      ├── Camera_Pose.tsv
+      ├── Coordinate_Conversion.tsv
+      ├── Counting.tsv
+      ├── Existence.tsv
+      ├── gen_tsv.py
+      ├── Geometric_Reasoning.tsv
+      ├── Height.tsv
+      ├── Maze_Navigation.tsv
+      ├── multi-view_reasoning.tsv
+      ├── Object_Localization.tsv
+      ├── Object_Shape.tsv
+      ├── Object_Size_Estimation.tsv
+      ├── Occlusion.tsv
+      ├── Reach_Prediction.tsv
+      ├── relative_distance.tsv
+      ├── Route_Planning.tsv
+      ├── Situational_QA.tsv
+      ├── Spatial_Compatibility.tsv
+      ├── Spatial_Grid.tsv
+      ├── Spatial_Imagination.tsv
+      ├── Spatial_Relation.tsv
+      ├── Temporal-Appearance_Order.tsv
+      ├── Trajectory_Description.tsv
+      └── Velocity_Acceleration.tsv
+  └── data_sampled_video
+      ├──SITE-Bench
+      ├──STI-Bench
+      ├──VSI-Bench
+      └──vstibench 
 ```
 You can access these raw datasets:
 [3DSRBench](https://huggingface.co/datasets/ccvl/3DSRBench)

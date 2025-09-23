@@ -7,13 +7,14 @@
   <a href="https://github.com/JiaLianjie">Lianjie Jia</a><sup>*4</sup>,
   <a href="https://github.com/Dustzx">Fuxi Zhang</a><sup>4</sup>,
   <a href="https://spyflying.github.io/">Shaofei Huang</a><sup>3</sup>,
+  <br>
   <a href="https://github.com/YuhanWu27">Yuhan Wu</a><sup>4</sup>,
   <a href="https://github.com/Cuirundi">Rundi Cui</a><sup>4</sup>,
   <a href="https://github.com/RBinghao">Binghao Ran</a><sup>4</sup>,
   <a href="https://scholar.google.com/citations?user=3SAk3GQAAAAJ&hl=en">Zhang Zaibin</a><sup>4</sup>,
-  <br>
   <a href="https://www.zdzheng.xyz/" target="_blank" >Zhedong Zheng</a><sup>3</sup>,
   <a href="https://zhipengzhang.cn/">Zhipeng Zhang</a><sup>1</sup>,
+  <br>
   <a href="https://scholar.google.com/citations?user=j1XFhSoAAAAJ&hl=en&oi=ao" >Yifan Wang</a><sup>4</sup>,
   <a href="https://github.com/StevenGrove">Lin Song</a><sup>2</sup>,
   <a href="https://scholar.google.com/citations?hl=en&user=EfTwkXMolscC&view_op=list_works&sortby=pubdate" >Lijun Wang</a><sup>4</sup>,
@@ -32,12 +33,12 @@
 
 ## **📚 Overview**
 
-![radar2.1](./assets/radar2.1.png)
+![radar2.6](./assets/radar2.6.png)
 <h6 align="center"> Evaluation of SOTA Models on 23 Visual Spatial Reasoning Tasks.</h6>
 
 SIBench collects nearly 20 spatial reasoning datasets and categorizes them into three cognitive levels: basic perception, spatial understanding, and planning. The inputs include single images, multi-view images, and videos, while the question formats cover multiple-choice, numerical question answering, and true-or-false questions. The purpose of this benchmark is to provide a comprehensive and detailed evaluation of the spatial reasoning capabilities of existing VLMs, to serve as a convenient evaluation tool for the community, and to guide future research directions.
 
-![settings](./assets/settings.png)
+![settings](./assets/cognitive_levels.png)
 <h6 align="center"> Statistical data of task settings.</h6>
 
 ## **📺 Introduction**
@@ -51,8 +52,8 @@ SIBench collects nearly 20 spatial reasoning datasets and categorizes them into 
 **1. Clone this repo:**
 
 ```
-git clone https://github.com/song2yu/SIBench_eval.git
-cd SIBench_eval
+git clone https://github.com/song2yu/SIBench-VSR.git
+cd SIBench-VSR
 ```
 
 **2. Prepare the test data according to the following format：**

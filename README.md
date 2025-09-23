@@ -1,20 +1,32 @@
 # **How Far are VLMs from True Visual Spatial Intelligence? A Benchmark-Driven Perspective**
 
 <div align="center">
-  <a href="https://song2yu.github.io/">Songsong Yu</a>,
-  <a href="https://haodot.github.io/">Hao Ju</a>,
-  <a href="https://github.com/JiaLianjie">Lianjie Jia</a>,
-  <a href="https://github.com/Dustzx">Fuxi Zhang</a>,
-  <a href="https://spyflying.github.io/">Shaofei Huang</a>,
-  <a href="https://github.com/Cuirundi">Rundi Cui</a>,
-  <a href="https://github.com/YuhanWu27">Yuhan Wu</a>,
-  <a href="https://github.com/RBinghao">Binghao Ran</a>,
-  <a href="https://scholar.google.com/citations?user=3SAk3GQAAAAJ&hl=en">Zhang Zaibin</a>,
+  <a href="https://song2yu.github.io/">Songsong Yu</a><sup>*1,2</sup>,
+  <a href="https://github.com/Uason-Chen">Yuxin Chen</a><sup>🌟*2</sup>,
+  <a href="https://haodot.github.io/">Hao Ju</a><sup>3</sup>,
+  <a href="https://github.com/JiaLianjie">Lianjie Jia</a><sup>*4</sup>,
+  <a href="https://github.com/Dustzx">Fuxi Zhang</a><sup>4</sup>,
+  <a href="https://spyflying.github.io/">Shaofei Huang</a><sup>3</sup>,
+  <a href="https://github.com/YuhanWu27">Yuhan Wu</a><sup>4</sup>,
+  <a href="https://github.com/Cuirundi">Rundi Cui</a><sup>4</sup>,
+  <a href="https://github.com/RBinghao">Binghao Ran</a><sup>4</sup>,
+  <a href="https://scholar.google.com/citations?user=3SAk3GQAAAAJ&hl=en">Zhang Zaibin</a><sup>4</sup>,
   <br>
-  <a href="https://zhipengzhang.cn/">Zhipeng Zhang</a>,
-  <a href="https://github.com/StevenGrove">Lin Song</a>,
-  <a href="https://github.com/Uason-Chen">Yuxin Chen</a><sup>🌟</sup>,
-  <a href="https://yanwei-li.com/">Yanwei Li</a>
+  <a href="https://www.zdzheng.xyz/" target="_blank" >Zhedong Zheng</a><sup>3</sup>,
+  <a href="https://zhipengzhang.cn/">Zhipeng Zhang</a><sup>1</sup>,
+  <a href="https://scholar.google.com/citations?user=j1XFhSoAAAAJ&hl=en&oi=ao" >Yifan Wang</a><sup>4</sup>,
+  <a href="https://github.com/StevenGrove">Lin Song</a><sup>2</sup>,
+  <a href="https://scholar.google.com/citations?hl=en&user=EfTwkXMolscC&view_op=list_works&sortby=pubdate" >Lijun Wang</a><sup>4</sup>,
+  <a href="https://yanwei-li.com/">Yanwei Li</a><sup>5</sup>,
+  <a href="https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en&oi=ao" >Ying Shan</a><sup>2</sup>,
+  <a href="https://scholar.google.com/citations?hl=en&user=D3nE0agAAAAJ" >Huchuan Lu</a><sup>4</sup>,
+  <br><br>
+  <sup>1</sup>SJTU,
+  <sup>2</sup>ARC Lab, Tencent PCG,
+  <sup>3</sup>UM,
+  <sup>4</sup>DLUT,
+  <sup>5</sup>CUHK
+  
 </div>
 <br>
 

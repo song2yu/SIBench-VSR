@@ -63,7 +63,7 @@ cd SIBench-VSR
 
 pip install -e .
 
-pip install transformers==4.49.0  ccelerate==0.26.0 flash-attn==2.7.3 # the specific packages that are prone to issues 
+pip install transformers==4.49.0  ccelerate==0.26.0 # the specific packages that are prone to issues 
 ```
 
 **2. Prepare the test data according to the following format：**

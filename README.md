@@ -33,10 +33,12 @@
 
 ## **📚 Overview**
 
-![radar2.6](./assets/radar2.6.png)
+![radar2.6](./assets/radar2.6_calibri.png)
 <h6 align="center"> Evaluation of SOTA Models on 23 Visual Spatial Reasoning Tasks.</h6>
 
+
 SIBench collects nearly 20 spatial reasoning datasets and categorizes them into three cognitive levels: basic perception, spatial understanding, and planning. The inputs include single images, multi-view images, and videos, while the question formats cover multiple-choice, numerical question answering, and true-or-false questions. The purpose of this benchmark is to provide a comprehensive and detailed evaluation of the spatial reasoning capabilities of existing VLMs, to serve as a convenient evaluation tool for the community, and to guide future research directions.
+
 
 ![settings](./assets/cognitive_levels.png)
 <h6 align="center"> Statistical data of task settings.</h6>

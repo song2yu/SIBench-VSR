@@ -31,6 +31,11 @@
   \* Equal Contributions
   🌟 Project Lead
   ✉️ Corresponding Author
+
+<p align="center">
+🤗 <a href="https://huggingface.co/datasets/Two-hot/SIBench"> Dataset </a>&nbsp&nbsp | &nbsp&nbsp🌐 <a href="https://sibench.github.io/Awesome-Visual-Spatial-Reasoning/"> Leaderboard</a>&nbsp&nbsp | &nbsp&nbsp📄 <a href="https://arxiv.org/abs/2509.18905">arXiv</a>
+</p>
+  
 </div>
 <br>
 
@@ -182,7 +187,12 @@ SETTING = ['relative_distance', 'Reach_Prediction', 'Object_Shape', 'Height', 'E
 - If you find this project useful, please consider citing:
 
 ```
-coming soon
+@article{sibench2025,
+  title={How Far are VLMs from True Visual Spatial Intelligence? A Benchmark-Driven Perspective},
+  author={Songsong Yu, Yuxin Chen, Hao Ju, Lianjie Jia, Fuxi Zhang, Shaofei Huang, Yuhan Wu, Rundi Cui, Binghao Ran, Zaibin Zhang, Zhedong Zheng, Zhipeng Zhang, Yifan Wang, Lin Song, Lijun Wang, Yanwei Li, Ying Shan, Huchuan Lu},
+  journal={arXiv preprint arXiv:2509.18905},
+  year={2025}
+}
 ```
 
 ## **🤗 Acknowledgement**

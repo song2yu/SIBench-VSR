@@ -66,9 +66,13 @@ git clone https://github.com/song2yu/SIBench-VSR.git
 
 cd SIBench-VSR
 
+conda create -n sibench python=3.10.6 -y
+
+conda activate sibench
+
 pip install -e .
 
-pip install transformers==4.49.0  accelerate==0.26.0 # the specific packages that are prone to issues 
+pip install transformers==4.49.0 accelerate==0.26.0 flash-attn==2.7.3 # the specific packages that are prone to issues 
 ```
 
 **2. Prepare the test data according to the following format：**
@@ -167,7 +171,7 @@ You can access these raw datasets:
 To test a particular task separately, run the following code:
 
 ```
-export LMUData=/your/path/to/dataset/Spatial_Intelligence_Benchmark/data
+export LMUData=/your/path/to/SIBench-VSR/Spatial_Intelligence_Benchmark/data
 
 python run.py --data <setting_name> --model <model_name> --verbose
 
@@ -178,7 +182,7 @@ python run.py --data relative_distance --model InternVL2_5-2B --verbose
 
 **Test All Task Settings:**
 
-modify 'LMUData=/your/path/to/dataset/Spatial_Intelligence_Benchmark/data' in test.sh and run
+modify 'LMUData=/your/path/to/SIBench-VSR/Spatial_Intelligence_Benchmark/data' in test.sh and run
 ```
 bash test.sh
 ```

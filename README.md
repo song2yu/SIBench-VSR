@@ -102,49 +102,20 @@ SIBench-VSR
       ├── 3DSRBench
       ├── BLINK
       ├── MMSI-Bench
-      ├── Omni3D-Bench
-      ├── OmniSpatial
-      ├── SITE-Bench
-      ├── SPAR-Bench
-      ├── SpatialBench
-      ├── SpatialEval
-      ├── Spatial-MM
-      ├── SpatialMQA
-      ├── SPHERE-VLM
-      ├── SRBench
-      ├── STI-Bench
-      ├── Super-CLEVR-3D
-      ├── VSI-Bench
-      ├── vstibench
+      ...
       ├── Camera_Pose.tsv
       ├── Coordinate_Conversion.tsv
       ├── Counting.tsv
-      ├── Existence.tsv
-      ├── gen_tsv.py
-      ├── Geometric_Reasoning.tsv
-      ├── Height.tsv
-      ├── Maze_Navigation.tsv
-      ├── multi-view_reasoning.tsv
-      ├── Object_Localization.tsv
-      ├── Object_Shape.tsv
-      ├── Object_Size_Estimation.tsv
-      ├── Occlusion.tsv
-      ├── Reach_Prediction.tsv
-      ├── relative_distance.tsv
-      ├── Route_Planning.tsv
-      ├── Situational_QA.tsv
-      ├── Spatial_Compatibility.tsv
-      ├── Spatial_Grid.tsv
-      ├── Spatial_Imagination.tsv
-      ├── Spatial_Relation.tsv
-      ├── Temporal-Appearance_Order.tsv
-      ├── Trajectory_Description.tsv
-      └── Velocity_Acceleration.tsv
+      ...
   └── data_sampled_video
-      ├──SITE-Bench
-      ├──STI-Bench
-      ├──VSI-Bench
-      └──vstibench 
+      ├── SITE-Bench
+      ├── STI-Bench
+      ├── VSI-Bench
+      └── vstibench
+  └── SIBench-mini
+      ├── SCamera_Pose.tsv
+      ├── Coordinate_Conversion.tsv
+      ...
 ```
 You can access these raw datasets:
 [3DSRBench](https://huggingface.co/datasets/ccvl/3DSRBench)
@@ -192,6 +163,11 @@ bash test.sh
 ```
 SETTING = ['relative_distance', 'Reach_Prediction', 'Object_Shape', 'Height', 'Existence', 'Spatial_Compatibility', 'Coordinate_Conversion', 'Counting', 'Route_Planning', 'Trajectory_Description', 'Geometric_Reasoning', 'Spatial_Imagination', 'Object_Size_Estimation', 'Spatial_Grid', 'Situational_QA', 'Velocity_Acceleration', 'Maze_Navigation', 'Temporal-Appearance_Order', 'Camera_Pose', 'Occlusion', 'multi-view_reasoning', 'Object_Localization',"Spatial_Relation"]
 ```
+
+**Evaluation on SIBench-mini**
+
+If you want to test performance on SIBench-mini, simply move all the CSV files from the **SIBench-mini** folder to the **data** folder, replacing the existing CSV files.
+
 
 ## **📖 Citation**
 

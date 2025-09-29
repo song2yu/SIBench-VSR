@@ -78,12 +78,21 @@ Obtain the data from the following sources:
 ```html
 https://huggingface.co/datasets/Two-hot/SIBench
 ```
+
+or run download.py:
+```
+cd Spatial_Intelligence_Benchmark
+
+python download.py
+```
+
+
 For convenience, we sampled the videos and retained only **30 frames** for each one. The processed data are stored in **data_sampled_video**. We recommend replacing the original videos with these and setting the total number of sampled frames to 30 frames, which is consistent with the experimental setup in our paper. If you need to change the sampling rate, you can directly use these videos.
 
 The hierarchical structure of the data directory is:
 
 ```
-SIBench_eval
+SIBench-VSR
 └── Spatial_Intelligence_Benchmark
   └── data
       ├── 3DSRBench

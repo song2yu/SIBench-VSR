@@ -1,4 +1,4 @@
-export LMUData=/your/path/to/dataset/Spatial_Intelligence_Benchmark/data 
+export LMUData=/your/path/to/SIBench-VSR/Spatial_Intelligence_Benchmark/data 
 
 python run.py --data relative_distance Reach_Prediction Object_Shape Height Existence \
                 Spatial_Compatibility Coordinate_Conversion Counting Route_Planning Trajectory_Description \

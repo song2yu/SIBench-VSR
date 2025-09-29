@@ -119,7 +119,7 @@ Please analyze these frames and answer the question based on your observations.
         data_source = line.get('data_source')
         prompt = self.add_extra_prompt(prompt, answer_type, data_source)
 
-        if True: # video_llm
+        if video_llm: # video_llm true
             message = [dict(type='text', value=self.FRAMES_TMPL_SYS_4VIDEO_LLM)]
             message.append(dict(type='text', value=prompt))
             message.append(dict(type='video', value=video_path))

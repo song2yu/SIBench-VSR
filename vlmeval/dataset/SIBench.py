@@ -119,7 +119,7 @@ Please analyze these frames and answer the question based on your observations.
         data_source = line.get('data_source')
         prompt = self.add_extra_prompt(prompt, answer_type, data_source)
 
-        if video_llm: # video_llm true
+        if video_llm: # video_llm
             message = [dict(type='text', value=self.FRAMES_TMPL_SYS_4VIDEO_LLM)]
             message.append(dict(type='text', value=prompt))
             message.append(dict(type='video', value=video_path))
@@ -191,6 +191,17 @@ Please analyze these frames and answer the question based on your observations.
         mra = mra_sum / len(C)
         return mra
 
+    def yn_Extraction(self, pred):
+        pred = pred.strip().lower()
+        pred = re.sub(r'[^\w\s]', '', pred)
+
+        if pred == "yes":
+            return "yes"
+        elif pred == "no":
+            return "no"
+        else:
+            return pred
+
     def evaluate(self, eval_file, **judge_kwargs):
         from .utils.multiple_choice import extract_characters_regex, report_acc
         from .utils.yorn import YOrN_Extraction
@@ -223,12 +234,16 @@ Please analyze these frames and answer the question based on your observations.
                     else:
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                 elif output_type == 'YN':
-                    extract_pred = pred # YOrN_Extraction(pred)
-                    if extract_pred == 'Unknown':
+                    extract_pred_yn = self.yn_Extraction(pred[:3]) # YOrN_Extraction(pred)
+                    ans_yn = self.yn_Extraction(ans[:3])
+                    if ans_yn == 'yes' or ans_yn == 'no':
+                        ans = ans_yn
+                        pred = extract_pred_yn
+                    if pred == 'Unknown':
                         cnt_rejected += 1
                         data.loc[data['index'] == idx, 'hit'] = 0
                     else:
-                        data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
+                        data.loc[data['index'] == idx, 'hit'] = int(pred.strip().lower() == ans.strip().lower())
                 elif output_type.startswith('Number'):
                     try:
                         extract_pred = eval(str(pred.strip()))

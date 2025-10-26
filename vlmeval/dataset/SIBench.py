@@ -5,6 +5,10 @@ from ..smp import *
 import os
 import decord
 import re
+import warnings
+from .utils import build_judge, DEBUG_MESSAGE
+
+
 
 class SIBench(ImageMCQDataset, ImageBaseDataset, VideoBaseDataset):
     MODALITY = 'MixedInput'
@@ -163,8 +167,7 @@ Please analyze these frames and answer the question based on your observations.
             video_data_base = data_base.replace('/data', '/data_sampled_video')
             return self.build_prompt_for_video(line=line, video_llm=video_llm, data_base=video_data_base)
         else:
-            raise NotImplementedError(f"Unrecognized input type: {line.get('input_type')}.\
-                                       Just support 'image', 'multi-view' and 'video'.")
+            raise NotImplementedError(f"Unrecognized input type: {line.get('input_type')}. Just support 'image', 'multi-view' and 'video'.")
 
     def extract_numbers_from_string(self, text, reverse_order):
         number_strings = re.findall(r'-?\d{1,3}(?:,\d{3})*(?:\.\d+)?', text)
@@ -202,6 +205,78 @@ Please analyze these frames and answer the question based on your observations.
         else:
             return pred
 
+    def check_string_format(self, s):
+        # 1: ("A.", "B:", etc.)
+        if re.match(r'^[A-F][\.\:]', s):
+            return True
+        # 2: ("(A)", " (A)", etc.)
+        if '(' in s[:3]:
+            return True
+        # 3: ("A", "Apple", "A Answer", etc.)
+        if s[0] in 'ABCDEF':
+            return True
+
+        return False
+
+    def mcq_check(self, predict):
+        if isinstance(predict, float):
+            predict = 'z'
+        if '(' in predict[:3]:
+            predict = predict[1]
+        predict = predict.split('.')[0].split(':')[0]
+
+        return predict
+
+
+    def build_prompt_mcq(self, reasoning_text):
+        prompt_template = """You are a multiple-choice answer extractor.
+            Your sole task is to identify the final answer from a piece of reasoning text and return *only* the corresponding option letter.
+            Your response must strictly follow the format: return only the option letter, enclosed in English double quotes. Do not include any other text, explanation, or prefixes.
+            ---
+            **Example 1:**
+            **Input:** "Based on the analysis, options A and B are clearly wrong. Option C mentions... This is correct. Therefore, the final answer is C."
+            **Output:** "C"
+            **Example 2:**
+            **Input:** "Let's go through them one by one. A... B... C... D... After a comprehensive comparison, option A's description is the most complete and accurate. So, the answer is A."
+            **Output:** "A"
+            **Example 3:**
+            **Input:** "The analysis shows that B is the correct choice because..."
+            **Output:** "B"
+            ---
+            Now, strictly following the format above, extract the answer from the following text:
+
+            """
+        return prompt_template + reasoning_text
+
+    def llm_process(self, pred, model):
+        prompt = self.build_prompt_mcq(pred)
+        logger = get_logger('Evaluation')
+        retry = 3
+
+        while retry:
+            ans = model.generate(prompt).strip(" '\"")
+            if 'Failed to obtain answer via API' in ans:
+                logger.warning('GPT API failed to answer. ')
+            else:
+                if ans:
+                    return ans #dict(opt=ans, log=ans)
+                else:
+                    logger.warning(
+                        f'Failed to in infer: prediction is {ans}'
+                    )
+            retry -= 1
+
+            if retry == 0:
+                return 'z' #dict(opt='z', log='Failed to predict')
+
+    def extract_mcq(self, pred, model):
+        need_llm = not self.check_string_format(pred)
+        if need_llm:
+            pred = self.llm_process(pred, model)
+
+        return self.mcq_check(pred)
+
+
     def evaluate(self, eval_file, **judge_kwargs):
         from .utils.multiple_choice import extract_characters_regex, report_acc
         from .utils.yorn import YOrN_Extraction
@@ -212,8 +287,13 @@ Please analyze these frames and answer the question based on your observations.
         score_file = eval_file.replace('.xlsx', '_score.xlsx')
         score_file_csv = eval_file.replace('.xlsx', '_score.csv')
 
-        if not osp.exists(score_file):
+        model = build_judge(**judge_kwargs)
+        if not model.working():
+            warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
+            warnings.warn(DEBUG_MESSAGE)
+            model = None
 
+        if not osp.exists(score_file):
             res = {} if not osp.exists(tmp_file) else load(tmp_file)
             res = {k: v for k, v in res.items() if FAIL_MSG not in v}
 
@@ -227,7 +307,7 @@ Please analyze these frames and answer the question based on your observations.
                 output_type = data.loc[data['index'] == idx, 'type'].values[0]
 
                 if output_type == 'MCQ':
-                    extract_pred = pred # extract_characters_regex(pred)
+                    extract_pred = self.extract_mcq(pred, model) # extract_characters_regex(pred)
                     if extract_pred == '':
                         cnt_rejected += 1
                         data.loc[data['index'] == idx, 'hit'] = 0
@@ -249,11 +329,7 @@ Please analyze these frames and answer the question based on your observations.
                         extract_pred = eval(str(pred.strip()))
                     except Exception:
                         extract_pred = -1.0 #pred.strip()  # self.extract_numbers_from_string(pred, True)
-                    # if len(extract_pred) == 0:
-                    #     cnt_rejected += 1
-                    #     data.loc[data['index'] == idx, 'hit'] = 0
-                    #     continue
-                    # extract_pred = extract_pred[0]
+
                     ans = eval(str(ans))
                     if output_type == 'Number': 
                         data.loc[data['index'] == idx, 'hit'] = self.compute_mra(ans, extract_pred) #data.loc[data['index'] == idx, 'hit'] = 0 #
@@ -261,7 +337,6 @@ Please analyze these frames and answer the question based on your observations.
                         data.loc[data['index'] == idx, 'hit'] = int(extract_pred == ans)
                     else:
                         NotImplementedError(f'Unsupported output type {output_type}.')
-
 
             print(
                 f'Among {len(data)} questions, failed to obtain prediction for {len(data) - len(data_un)} questions, '

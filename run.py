@@ -399,7 +399,9 @@ def main():
                         judge_kwargs['model'] = 'qwen-72b'
                     elif listinstr(['MMVMBench'], dataset_name):
                         judge_kwargs['model'] = 'gpt-4o'
-
+                    elif dataset.TYPE == 'MixedOutput':
+                        judge_kwargs['model'] = 'qwen-72b'
+                        
                 if RANK == 0:
                     logger.info(judge_kwargs)
 

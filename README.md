@@ -157,6 +157,13 @@ modify 'LMUData=/your/path/to/SIBench-VSR/Spatial_Intelligence_Benchmark/data' i
 ```
 bash test.sh
 ```
+**Calculate scores for three tasks and total score**
+
+modify 'output_folder' in compute_score.py and run
+```
+python compute_score.py
+```
+
 
 **Supported test settings:**
 
